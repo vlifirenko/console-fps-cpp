@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 using namespace std;
 
 #include <Windows.h>
@@ -44,9 +45,27 @@ int main()
 	map += L"#..............#";
 	map += L"################";
 
+	// init clock
+	auto tp1 = chrono::system_clock::now();
+	auto tp2 = chrono::system_clock::now();
+
 	// game loop
 	while (1)
 	{
+		// update clock
+		tp2 = chrono::system_clock::now();
+		chrono::duration<float> elapsedTime = tp2 - tp1;
+		tp1 = tp2;
+		float fElapsedTime = elapsedTime.count();
+
+		// controls
+		// handle CCW rotation
+		if (GetAsyncKeyState((unsigned short)'A') & 0x8000)
+			fPlayerA -= (0.5f) * fElapsedTime;
+
+		if (GetAsyncKeyState((unsigned short)'D') & 0x8000)
+			fPlayerA += (0.5f) * fElapsedTime;
+
 		for (int x = 0; x < nScreenWidth; x++)
 		{
 			// for each column, calc the projected ray angle into world space
